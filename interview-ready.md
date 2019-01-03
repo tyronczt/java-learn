@@ -20,6 +20,8 @@
 
 [3y](https://github.com/ZhongFuCheng3y/3y)
 
+[EasyJob](https://github.com/it-interview/EasyJob)
+
 [advanced-java](https://github.com/doocs/advanced-java)
 
 [java-bible](https://github.com/biezhi/java-bible)
