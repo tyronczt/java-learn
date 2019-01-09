@@ -40,12 +40,11 @@ Exception 这种异常分两大类**运行时异常**和**非运行时异常**(�
 
 
 Java异常机制用到的几个关键字：**try、catch、finally、throw、throws。**<br/>
-• **try**        -- 用于监听。将要被监听的代码(可能抛出异常的代码)放在try语句块之内，当try语句块内发生异常时，异常就被抛出。<br/><br/>
+• **try**        -- 用于监听。将要被监听的代码(可能抛出异常的代码)放在try语句块之内，当try语句块内发生异常时，异常就被抛出。<br/>
 • **catch**   -- 用于捕获异常。catch用来捕获try语句块中发生的异常。<br/>
-• **finally**  -- finally语句块总是会被执行。它主要用于回收在try块里打开的物力资源(如数据库连接、网络连接和磁盘文件)。只有finally块，执行完成之后，才会回来执行try或者catch块中的return或者throw语句，如果finally中使用了return或者throw等终止方法的语句，则就不会跳回执行，直接停止。<br/>
+• **finally**  -- finally语句块总是会被执行。它主要用于回收在try块里打开的物力资源(如数据库连接、网络连接和磁盘文件<br/>)。只有finally块，执行完成之后，才会回来执行try或者catch块中的return或者throw语句，如果finally中使用了return或者throw等终止方法的语句，则就不会跳回执行，直接停止。<br/>
 • **throw**   -- 用于抛出异常。<br/>
-• **throws** -- 用在方法签名中，用于声明该方法可能抛出的异常。<br/>
-
+• **throws** -- 用在方法签名中，用于声明该方法可能抛出的异常。
 
 
 ### 面试题
@@ -64,9 +63,41 @@ Java异常机制用到的几个关键字：**try、catch、finally、throw、thr
 
  **Java中的检查型异常和非检查型异常有什么区别？**
 
+所谓检查（**Checked**）是指**编译器**要检查这类异常，检查的目的一方面是因为该类异常的发生难以避免，另一方面就是让开发者去解决掉这类异常，所以称为必须处理（try ...catch）的异常。如果不处理这类异常，集成开发环境中的编译器一般会给出错误提示。
 
+　　**例如：**一个读取文件的方法代码逻辑没有错误，但程序运行时可能会因为文件找不到而抛出FileNotFoundException，如果不处理这些异常，程序将来肯定会出错。所以编译器会提示你要去捕获并处理这种可能发生的异常，不处理就不能通过编译。
 
+所谓非检查（**Unchecked**）是指**编译器**不会检查这类异常，不检查的则开发者在代码的编辑编译阶段就不是必须处理，这类异常一般可以避免，因此无需处理（try ...catch）。如果不处理这类异常，集成开发环境中的编译器也不会给出错误提示。
 
+　　**例如：**你的程序逻辑本身有问题，比如数组越界、访问null对象，这种错误你自己是可以避免的。编译器不会强制你检查这种异常。
+
+**JDK7中对异常处理做了什么改变？**
+
+**你遇到过 OutOfMemoryError 错误嘛？你是怎么搞定的？**
+
+**try、catch、finally语句块的执行顺序**
+
+**熟悉的runtimeException子类**
+
+1、 java.lang.ArrayIndexOutOfBoundsException
+数组索引越界异常。当对数组的索引值为负数或大于等于数组大小时抛出。
+
+2、java.lang.ArithmeticException
+算术条件异常。譬如：整数除零等。
+
+3、java.lang.NullPointerException
+空指针异常。当应用试图在要求使用对象的地方使用了null时，抛出该异常。譬如：调用null对象的实例方法、访问null对象的属性、计算null对象的长度、使用throw语句抛出null等等。
+
+4、java.lang.ClassNotFoundException
+找不到类异常。当应用试图根据字符串形式的类名构造类，而在遍历CLASSPAH之后找不到对应名称的class文件时，抛出该异常。
+
+5、java.lang.NegativeArraySizeException  数组长度为负异常 
+
+6、java.lang.ArrayStoreException 数组中包含不兼容的值抛出的异常
+
+7、java.lang.SecurityException 安全性异常
+
+8、java.lang.IllegalArgumentException 非法参数异常
 
 
 
@@ -88,4 +119,4 @@ https://www.imooc.com/article/14668
 
 https://blog.csdn.net/liyazhou0215/article/details/77413726
 
-https://mp.weixin.qq.com/s/m-vJ6EA7b23w7ijzVtzY3g
+https://mp.weixin.qq.com/s/m-vJ6EA7b23w7ijzVtzY3g 
