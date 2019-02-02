@@ -6,11 +6,11 @@
 
 ## 集合
 
-ArrayList/Vector
-LinkedList
-HashMap
-HashSet
-LinkedHashMap
+- ArrayList/Vector
+- LinkedList
+- HashMap
+- HashSet
+- LinkedHashMap
 
 ## Java 多线程
 
