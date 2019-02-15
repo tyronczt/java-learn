@@ -8,7 +8,7 @@
 
 - ArrayList/Vector
 - LinkedList
-- HashMap
+- [HashMap](https://github.com/tyronczt/java-learn/blob/master/Collection/HashMap.md)
 - HashSet
 - LinkedHashMap
 
