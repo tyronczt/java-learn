@@ -65,17 +65,48 @@ Java异常机制用到的几个关键字：**try、catch、finally、throw、thr
 
 所谓检查（**Checked**）是指**编译器**要检查这类异常，检查的目的一方面是因为该类异常的发生难以避免，另一方面就是让开发者去解决掉这类异常，所以称为必须处理（try ...catch）的异常。如果不处理这类异常，集成开发环境中的编译器一般会给出错误提示。
 
-　　**例如：**一个读取文件的方法代码逻辑没有错误，但程序运行时可能会因为文件找不到而抛出FileNotFoundException，如果不处理这些异常，程序将来肯定会出错。所以编译器会提示你要去捕获并处理这种可能发生的异常，不处理就不能通过编译。
+　　**例如：**  一个读取文件的方法代码逻辑没有错误，但程序运行时可能会因为文件找不到而抛出FileNotFoundException，如果不处理这些异常，程序将来肯定会出错。所以编译器会提示你要去捕获并处理这种可能发生的异常，不处理就不能通过编译。
 
 所谓非检查（**Unchecked**）是指**编译器**不会检查这类异常，不检查的则开发者在代码的编辑编译阶段就不是必须处理，这类异常一般可以避免，因此无需处理（try ...catch）。如果不处理这类异常，集成开发环境中的编译器也不会给出错误提示。
 
-　　**例如：**你的程序逻辑本身有问题，比如数组越界、访问null对象，这种错误你自己是可以避免的。编译器不会强制你检查这种异常。
+　　**例如：**  你的程序逻辑本身有问题，比如数组越界、访问null对象，这种错误你自己是可以避免的。编译器不会强制你检查这种异常。
 
 **JDK7中对异常处理做了什么改变？**
 
+- Multicatch：开发者现在能够在一个catch代码块中捕获多个异常类型；
+
+- Final Rethrow：它可以让开发者捕获一个异常类型及其子类型，并且无需向方法声明中增加抛出子句，就能重新将其抛出。
+
 **你遇到过 OutOfMemoryError 错误嘛？你是怎么搞定的？**
 
+- 内存中加载的数据量过于庞大，如一次从数据库取出过多数据；
+- 集合类中有对对象的引用，使用完后未清空，使得JVM不能回收；
+- 代码中存在死循环或循环产生过多重复的对象实体；
+- 使用的第三方软件中的BUG；
+- 启动参数内存值设定的过小；
+
+此错误常见的错误提示：
+
+- tomcat:java.lang.OutOfMemoryError: PermGen space
+- tomcat:java.lang.OutOfMemoryError: Java heap space
+- weblogic:Root cause of ServletException java.lang.OutOfMemoryError
+- resin:java.lang.OutOfMemoryError
+- java:java.lang.OutOfMemoryError
+
+一、增加jvm的内存大小。方法有：
+在执行某个class文件时候，可以使用java -Xmx256M aa.class来设置运行aa.class时jvm所允许占用的最大内存为256M，对tomcat容器，可以在启动时对jvm设置内存限度。打开$TOMCAT_HOME/bin/catalina.sh文件，添加：JAVA_OPTS=-Xms256m -Xmx512m -XX:PermSize=256M -XX:MaxPermSize=512M
+
+二、 优化程序，释放垃圾。
+主要包括避免死循环，应该及时释放种资源：内存, 数据库的各种连接，防止一次载入太多的数据。导致java.lang.OutOfMemoryError的根本原因是程序不健壮。因此，从根本上解决Java内存溢出的唯一方法就是修改程序，及时地释放没用的对象，释放内存空间。
+
 **try、catch、finally语句块的执行顺序**
+- finally语句总会执行
+- 如果try、catch中有return语句，finally中没有return，那么在finally中修改除包装类型和静态变量、全局变量以外的数据都不会对try、catch中返回的变量有任何的影响（包装类型、静态变量会改变、全局变量）
+- 尽量不要在finally中使用return语句，如果使用的话，会忽略try、catch中的返回语句，也会忽略try、catch中的异常，屏蔽了错误的发生
+- finally中避免再次抛出异常，一旦finally中发生异常，代码执行将会抛出finally中的异常信息，try、catch中的异常将被忽略
+
+所以在实际项目中，finally常常是用来关闭流或者数据库资源的，并不额外做其他操作。
+
 
 **熟悉的runtimeException子类**
 
@@ -114,8 +145,6 @@ Java异常机制用到的几个关键字：**try、catch、finally、throw、thr
 [JAVA基础——异常详解](https://www.cnblogs.com/hysum/p/7112011.html)
 
 [Java异常(一) Java异常简介及其架构](https://www.cnblogs.com/skywang12345/p/3544168.html)
-
-https://www.imooc.com/article/14668
 
 https://blog.csdn.net/liyazhou0215/article/details/77413726
 
