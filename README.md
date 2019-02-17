@@ -2,7 +2,7 @@
 
 - [异常](https://github.com/tyronczt/java-learn/blob/master/Basic/Exception.md)
 
-- [基本数据类型](https://github.com/tyronczt/java-learn/blob/master/Basic/dataTypes.md)
+- [基本数据类型](https://github.com/tyronczt/java-learn/blob/master/Basic/DataTypes.md)
 
 ## 集合
 
