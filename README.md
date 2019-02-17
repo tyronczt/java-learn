@@ -1,8 +1,8 @@
 ## Java基础
 
-- [异常](https://github.com/tyronczt/java-learn/blob/master/basic/Exception.md)
+- [异常](https://github.com/tyronczt/java-learn/blob/master/Basic/Exception.md)
 
-- [基本数据类型](https://github.com/tyronczt/java-learn/blob/master/basic/dataTypes.md)
+- [基本数据类型](https://github.com/tyronczt/java-learn/blob/master/Basic/dataTypes.md)
 
 ## 集合
 
