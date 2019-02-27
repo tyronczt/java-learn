@@ -28,7 +28,7 @@ IDEA类注释模板设置
 File-->settings-->Editor-->File and Code Templates-->Files-->class
 
     /**
-     * @Desription TODO
+     * @Description TODO
      *
      * @Author: TyronChen
      * @Date: Created in ${DATE}
