@@ -8,3 +8,4 @@
 
 2、[【干货】MySQL数据库开发规范](https://juejin.im/post/5c15c2b3f265da6170070613)
 
+3、[MySQL数据库设计规范](https://www.cnblogs.com/52fhy/p/9615551.html)
