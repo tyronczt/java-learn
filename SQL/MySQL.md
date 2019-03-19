@@ -80,11 +80,18 @@ pk_ 即 primary key；uk_ 即 unique key；idx_ 即 index 的简称
 - 使用 **UNSIGNED** 存储非负数值 
 - 使用`tinyint`来代替 `enum`和`boolean `
 - 存储 ip 最好用 `int`存储而非 `char(15) `
+
+```sql
+通过MySQL函数inet_ntoa和inet_aton来进行转化。IPv6地址目前没有转化函数，需要使用DECIMAL或两个BIGINT来存储
+SELECT INET_ATON('209.207.224.40'); 3520061480
+SELECT INET_NTOA(3520061480); 209.207.224.40
+```
+
 - 表中的自增列（`auto_increment`属性），推荐使用`bigint`类型 
 
 #### 2、不推荐使用`blob`，`text`等类型
 
-`blob`，`text`是为了存储极大的字符串而设计的数据类型，采用二进制与字符串方式存储，该数据类型不能设置默认值、不便于排序、不便于建立索引， `varchar` 的性能会比 `text` 高很多，如果非要使用，建议将这种数据分离到单独的拓展表中
+`blob`，`text`是为了存储极大的字符串而设计的数据类型，采用二进制与字符串方式存储，该数据类型不能设置默认值、不便于排序、不便于建立索引， `varchar` 的性能会比 `text` 高很多，如果非要使用，建议将这种数据分离到单独的拓展表中
 
 #### 3、禁止使用字符串来存储日期型数据
 
@@ -124,6 +131,10 @@ pk_ 即 primary key；uk_ 即 unique key；idx_ 即 index 的简称
 
 值类型括号后面的数字只是表示宽度而跟存储范围没有关系
 
+#### 11、核心表必须有行数据的创建时间和最后更新时间
+
+核心表（如用户表，金钱相关的表）必须有行数据的创建时间字段`create_time`和最后更新时间字段`update_time`，便于查问题
+
 ### 四、索引设计规范
 
 索引其实就是一种数据结构，（哈希表、树等等）不同类型的索引有着不同的数据结构和功能。
@@ -161,11 +172,21 @@ MySQL的查询速度依赖良好的索引设计，因此索引对于高性能至
 - UPDATE、DELETE 语句的 WHERE 条件列
 - ORDER BY、GROUP BY、DISTINCT 的字段
 - 多表 JOIN 的字段
+- 覆盖索引可以避免Innodb表进行索引的二次查询，把随机IO变成顺序IO，加快查询效率
 
 #### 5、区分度最大的字段放在前面
 
 - 选择筛选性更优的字段放在最前面，比如单号、userid等，type，status等筛选性一般不建议放在最前面
 - 索引根据左前缀原则，当建立一个联合索引(a,b,c)，则查询条件里面只有包含(a)或(a,b)或(a,b,c)的时候才能走索引，(a,c)作为条件的时候只能使用到a列索引，所以这个时候要确定a的返回列一定不能太多，不然语句设计就不合理，(b,c)则不能走索引
+
+#### 6、业务上具有唯一特性的字段，即使是多个字段的组合，也必须建成唯一索引
+
+不要以为唯一索引影响了 insert 速度，这个速度损耗可以忽略，但提高查找速度是明
+显的； 另外，即使在应用层做了非常完善的校验控制，只要没有唯一索引，根据墨菲定律，必然有脏数据产生
+
+#### 7、InnoDB 和 MyISAM 存储引擎表，索引类型必须为BTREE
+
+MEMORY表可以根据需要选择 `HASH` 或者 `BTREE` 类型索引
 
 #### 00、MYSQL 中索引的限制
 
@@ -177,11 +198,9 @@ MySQL的查询速度依赖良好的索引设计，因此索引对于高性能至
 - 使用 LIKE 操作的时候如果条件以通配符开始 (如 ‘%abc…’)时, MYSQL无法使用索引。
 - 使用非等值查询的时候, MYSQL 无法使用 Hash 索引
 
-
-
 ### 五、SQL查询规范
 
-#### 1、按需索取，拒绝 `select *` 
+#### 1、按需索取，拒绝 `select *` 
 
 - 无法索引覆盖，回表操作，增加 io
 - 额外的内存负担，大量冷数据灌入`innodb_buffer_pool_size`，降低查询命中率 
@@ -197,7 +216,58 @@ MySQL的查询速度依赖良好的索引设计，因此索引对于高性能至
 - 比如 OR 条件： f_phone=’10000’ or f_mobile=’10000’，两个字段各自有索引，但只能用到其中一个。可以拆分成2个sql，或者union all
 - 先explain的好处是可以为了利用索引，增加更多查询限制条件
 
+#### 4、对应同一列进行 or 判断时，使用 in 代替 or
 
+in 的值不要超过 500 个， in 操作可以更有效的利用索引，or 大多数情况下很少能利用到索引
+
+#### 5、禁止使用 order by rand() 进行随机排序
+
+- 会把表中所有符合条件的数据装载到内存中，然后在内存中对所有数据根据随机生成的值进行排序，并且可能会对每一行都生成一个随机值，如果满足条件的数据集非常大，就会消耗大量的 CPU 和 IO 及内存资源
+- 推荐在程序中获取一个随机值，然后从数据库中获取数据的方式
+
+#### 6、WHERE从句中禁止对列进行函数转换和计算
+
+对列进行函数转换或计算时会导致无法使用索引
+
+```sql
+不推荐：where date(create_time)='20190101'
+推荐：where create_time >= '20190101' and create_time < '20190102'
+```
+
+#### 7、不要使用 count(列名)或 count(常量)来替代 count(*) 
+
+count(*)是 SQL92 定义的标准统计行数的语法，跟数据库无关，跟 NULL 和非 NULL 无关
+
+count(*)会统计值为 NULL 的行，而 count(列名)不会统计此列为 NULL 值的行
+
+#### 8、不得使用外键与级联，一切外键概念必须在应用层解决
+
+以学生和成绩的关系为例，学生表中的 student_id是主键，那么成绩表中的 student_id则为外键。如果更新学生表中的 student_id，同时触发成绩表中的 student_id 更新， 即为级联更新。外键与级联更新适用于单机低并发，不适合分布式、高并发集群； 级联更新是强阻塞，存在数据库更新风暴的风险； 外键影响数据库的插入速度 
+
+#### 9、in 操作能避免则避免
+
+若实在避免不了，需要仔细评估 in 后边的集合元素数量，控制在 1000 个之内
+
+#### 10、超过三个表禁止 join
+
+需要 join 的字段，数据类型必须绝对一致；多表关联查询时，保证被关联的字段需要有索引；即使双表 join 也要注意表索引、 SQL 性能
+
+#### 11、SELECT语句不要使用`UNION`，推荐使用`UNION ALL`
+
+`UNION`子句个数限制在5个以内。因为`union all`不需要去重，节省数据库资源，提高性能
+
+#### 12、建议使用合理的分页方式以提高分页效率
+
+```sql
+不推荐 SELECT * FROM table ORDER BY TIME DESC LIMIT 10000，10;
+原因：会导致大量的io，因为MySQL使用的是提前读取策略
+推荐：SELECT * FROM table WHERE TIME < last_TIME ORDER BY TIME DESC LIMIT 10.
+SELECT * FROM table inner JOIN (SELECT id FROM table ORDER BY TIME LIMIT 10000，10) as t USING(id)
+```
+
+[MySQL分页查询的性能优化](https://www.cnblogs.com/scotth/p/7995856.html) --- 详细说明
+
+#### 13、减少与数据库交互次数，尽量采用批量SQL语句
 
 
 
@@ -207,19 +277,17 @@ MySQL的查询速度依赖良好的索引设计，因此索引对于高性能至
 
 [MySQL数据库开发规范-EC](http://seanlook.com/2016/05/11/mysql-dev-principle-ec/)
 
-https://www.cnblogs.com/huchong/p/10219318.html
+[MySQL 数据类型](http://www.runoob.com/mysql/mysql-data-types.html)
 
-http://www.runoob.com/mysql/mysql-data-types.html
+[MySQL数据库设计规范](https://www.cnblogs.com/52fhy/p/9615551.html)
 
-https://www.cnblogs.com/52fhy/p/9615551.html
-
-https://learnku.com/articles/25020
+[MySQL 规范](https://learnku.com/articles/25020)
 
 [MySQL 表与索引设计攻略](https://futu.im/article/mysql/)
 
-https://blog.csdn.net/xlgen157387/article/details/48086607
+[MySQL开发规范与使用技巧总结](https://blog.csdn.net/xlgen157387/article/details/48086607)
 
-https://blog.csdn.net/caohao1210/article/details/88193599
+[阿里巴巴Java开发手册（详尽版）.pdf](https://github.com/alibaba/p3c/blob/master/%E9%98%BF%E9%87%8C%E5%B7%B4%E5%B7%B4Java%E5%BC%80%E5%8F%91%E6%89%8B%E5%86%8C%EF%BC%88%E8%AF%A6%E5%B0%BD%E7%89%88%EF%BC%89.pdf)
 
 [深入浅出分析MySQL索引设计背后的数据结构](https://www.cnblogs.com/mysql-dba/p/6689597.html)
 
@@ -337,21 +405,27 @@ mysql的一个表总共字段长度不超过65535
 
 **ASCIIS码**： 1个英文字母（不分大小写）= 1个字节的空间
 
-​                    1个中文汉字 = 2个字节的空间
+```
+        1个中文汉字 = 2个字节的空间
 
-​                    1个ASCII码 = 一个字节
+        1个ASCII码 = 一个字节
+```
 
 **UTF-8编码**：1个英文字符 = 1个字节
 
-​                     英文标点  = 1个字节
+```
+          英文标点  = 1个字节
 
-​                     1个中文（含繁体） = 3个字节
+          1个中文（含繁体） = 3个字节
 
-​                     中文标点 = 3个字节
+          中文标点 = 3个字节
+```
 
 **utf8mb4** ：中文 = 3个字节
 
-​		    emoji表情符号 = 4个字节
+```
+         emoji表情符号 = 4个字节
+```
 
 #### 索引种类
 
@@ -402,6 +476,21 @@ ALTER TABLE `table_name` ADD FULLTEXT (`column`)
 
 InnoDB存储引擎中，secondary index（非主键索引）中没有直接存储行地址，存储主键值。如果用户需要查询secondary index中所不包含的数据列时，需要先通过secondary index查找到主键值，然后再通过主键查询到其他数据列，因此需要查询两次。覆盖索引的概念就是查询可以通过在一个索引中完成，覆盖索引效率会比较高，主键查询是天然的覆盖索引。合理的创建索引以及合理的使用查询语句，当使用到覆盖索引时可以获得性能提升。比如SELECT email,uid FROM user_email WHERE uid=xx，如果uid不是主键，适当时候可以将索引添加为index(uid,email)，以获得性能提升
 
+#### MySQL执行顺序
+
+```sql
+SELECT
+   DISTINCT <select_list>
+   FROM <left_table>
+   <join_type> JOIN <right_table>
+   ON <join_condition>
+   WHERE <where_condition>
+   GROUP BY <group_by_list>
+   HAVING <having_condition>
+   ORDER BY <order_by_condition>
+   LIMIT <limit_number>
+```
+
 #### 较为规范的建表语句
 
 ```mysql
@@ -426,7 +515,3 @@ CREATE TABLE `user` (
   KEY `idx_create_time` (`create_time`,`user_review_status`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='网站用户基本信息'
 ```
-
-
-
-
