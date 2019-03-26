@@ -46,3 +46,5 @@ TODO
 
 [【面蹄】Redis总结](https://blog.csdn.net/tian330726/article/details/84332830)
 
+## 其他
+- 设计模式
