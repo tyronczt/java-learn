@@ -4,6 +4,8 @@
 
 - [基本数据类型](https://github.com/tyronczt/java-learn/blob/master/Basic/DataTypes.md)
 
+- Java 8
+
 ## 集合
 
 - ArrayList/Vector
