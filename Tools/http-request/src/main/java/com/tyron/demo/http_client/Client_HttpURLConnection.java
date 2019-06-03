@@ -11,7 +11,7 @@ import java.util.Map;
 
 /**
  * @Description: HttpURLConnection
- * @Author: Chenzt
+ * @Author: tyron
  * @Date: Created in 2019/6/3
  */
 public class Client_HttpURLConnection {
