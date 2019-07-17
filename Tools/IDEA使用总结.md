@@ -27,8 +27,12 @@
   -- `iter`
 
 - 根据类名查找类
+
   -- `Ctrl + Shift + Alt + N`
 
+- 0%classes, 0% lines covered
+
+  -- `Ctrl + Alt + F6`，然后取消勾选，中间的那个No Coverage
 
 
 ### 优化配置
