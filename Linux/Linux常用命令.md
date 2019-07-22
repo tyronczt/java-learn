@@ -50,7 +50,7 @@ mkdir 命令，是 make directories 的缩写，用于创建新目录，此命�
 
   **-m 选项** 用于手动配置所创建目录的权限，而不再使用默认权限。
 
-  **-p  选项 **递归创建所有目录，以创建 /home/test/demo 为例，在默认情况下，你需要一层一层的创建各个目录，而使用 -p 选项，则系统会自动帮你创建 /home、/home/test 以及 /home/test/demo。
+  **-p 选项** 递归创建所有目录，以创建 /home/test/demo 为例，在默认情况下，你需要一层一层的创建各个目录，而使用 -p 选项，则系统会自动帮你创建 /home、/home/test 以及 /home/test/demo。
 
 ```shell
 [root@localhost ~]# mkdir [-mp] 目录名
