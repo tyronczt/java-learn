@@ -52,6 +52,7 @@ File-->Settings-->Editor-->File and Code Templates
 
 2、为方法添加自动注释模版
 File-->Settings-->Editor-->Live Templates
+
 点击"+"号后，选择"Templates Group…"
 ```java
 /**
@@ -64,9 +65,11 @@ File-->Settings-->Editor-->Live Templates
  */
 ```
 此时，在方法体内部输入add+Tab就可以生成注释了。
+
 图文参考：https://www.cnblogs.com/mmzs/p/8858634.htm
 
-IntelliJ IDEA关闭“Found duplicate code in”提示
+3、IntelliJ IDEA关闭“Found duplicate code in”提示
+
 File → Settings → Editor → Inspections；在Settings页面右侧的搜索栏处搜索 “Duplicated Code”，取消掉Duplicated Code后面的勾选，再保存设置
 
 
