@@ -25,7 +25,7 @@ TODO
 ## 常用框架
 
 - Spring
-- [SpringBoot](https://github.com/tyronczt/spring-boot-learning)
+- [Spring Boot](https://github.com/tyronczt/spring-boot-learning)
 - [Spring Cloud](https://github.com/tyronczt/Spring-Cloud-Learning)
 
 ## 数据库
