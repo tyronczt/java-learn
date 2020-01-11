@@ -27,11 +27,19 @@
   -- `iter`
 
 - 根据类名查找类
+
   -- `Ctrl + Shift + Alt + N`
 
+- 0%classes, 0% lines covered
+
+  -- `Ctrl + Alt + F6`，然后取消勾选，中间的那个No Coverage
 
 
 ### 优化配置
+
+1、为类添加自动注释模版
+
+File-->Settings-->Editor-->File and Code Templates
 
 ```java
 /**
@@ -42,6 +50,28 @@
 */
 ```
 
+2、为方法添加自动注释模版
+
+File-->Settings-->Editor-->Live Templates
+
+点击"+"号后，选择"Templates Group…"
+```java
+/**
+ * create by: tyron
+ * description: TODO
+ * create time: $date$ $time$
+ * 
+ $params$
+ * @return $return$
+ */
+```
+此时，在方法体内部输入add+Tab就可以生成注释了。
+
+图文参考：https://www.cnblogs.com/mmzs/p/8858634.htm
+
+3、IntelliJ IDEA关闭“Found duplicate code in”提示
+
+File → Settings → Editor → Inspections；在Settings页面右侧的搜索栏处搜索 “Duplicated Code”，取消掉Duplicated Code后面的勾选，再保存设置
 
 
 ### 插件
