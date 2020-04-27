@@ -1,0 +1,15 @@
+server:
+  port: 7080
+
+spring:
+  datasource:
+    username: root
+    password: 123456
+    url: jdbc:mysql://localhost:3306/zj_xzqh?useUnicode=true&characterEncoding=utf-8&useSSL=true&serverTimezone=UTC
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+logging:
+  level:
+    com:
+      tyron:
+        mapper: debug

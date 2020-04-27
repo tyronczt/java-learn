@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tyron.mapper.xzqh.ChinaXzqhMapper">
+    <resultMap id="BaseResultMap" type="com.tyron.pojo.entity.xzqh.ChinaXzqh">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="code" jdbcType="CHAR" property="code"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="nameplus" jdbcType="VARCHAR" property="nameplus"/>
+        <result column="fullname" jdbcType="VARCHAR" property="fullname"/>
+        <result column="type" jdbcType="CHAR" property="type"/>
+        <result column="cityname" jdbcType="VARCHAR" property="cityname"/>
+        <result column="citycode" jdbcType="VARCHAR" property="citycode"/>
+        <result column="pcode" jdbcType="VARCHAR" property="pcode"/>
+        <result column="pname" jdbcType="VARCHAR" property="pname"/>
+        <result column="address" jdbcType="VARCHAR" property="address"/>
+        <result column="tel" jdbcType="VARCHAR" property="tel"/>
+        <result column="gd_jd" jdbcType="VARCHAR" property="gdJd"/>
+        <result column="gd_wd" jdbcType="VARCHAR" property="gdWd"/>
+        <result column="bd_jd" jdbcType="VARCHAR" property="bdJd"/>
+        <result column="bd_wd" jdbcType="VARCHAR" property="bdWd"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+    </resultMap>
+</mapper>
