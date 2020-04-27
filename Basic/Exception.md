@@ -8,7 +8,7 @@
 
 **Java异常类层次结构图：**
 
-![img](https://img-my.csdn.net/uploads/201211/27/1354020417_5176.jpg)
+![img](http://tyronblog.com/upload/2020/4/Throwable-067be126908d4829aa7f3ee31091e23e.jpg)
 
 在 Java 中，所有的异常都有一个共同的祖先 **Throwable**（可抛出）。Throwable 指定代码中可用异常传播机制通过 Java 应用程序传输的任何问题的共性。
 
@@ -39,11 +39,11 @@ Exception 这种异常分两大类**运行时异常**和**非运行时异常**(�
 
 
 
-Java异常机制用到的几个关键字：**try、catch、finally、throw、throws。**<br/>
-• **try**        -- 用于监听。将要被监听的代码(可能抛出异常的代码)放在try语句块之内，当try语句块内发生异常时，异常就被抛出。<br/>
-• **catch**   -- 用于捕获异常。catch用来捕获try语句块中发生的异常。<br/>
-• **finally**  -- finally语句块总是会被执行。它主要用于回收在try块里打开的物力资源(如数据库连接、网络连接和磁盘文件<br/>)。只有finally块，执行完成之后，才会回来执行try或者catch块中的return或者throw语句，如果finally中使用了return或者throw等终止方法的语句，则就不会跳回执行，直接停止。<br/>
-• **throw**   -- 用于抛出异常。<br/>
+Java异常机制用到的几个关键字：**try、catch、finally、throw、throws。**
+• **try**        -- 用于监听。将要被监听的代码(可能抛出异常的代码)放在try语句块之内，当try语句块内发生异常时，异常就被抛出。
+• **catch**   -- 用于捕获异常。catch用来捕获try语句块中发生的异常。
+• **finally**  -- finally语句块总是会被执行。它主要用于回收在try块里打开的物力资源(如数据库连接、网络连接和磁盘文件)。只有finally块，执行完成之后，才会回来执行try或者catch块中的return或者throw语句，如果finally中使用了return或者throw等终止方法的语句，则就不会跳回执行，直接停止。
+• **throw**   -- 用于抛出异常。
 • **throws** -- 用在方法签名中，用于声明该方法可能抛出的异常。
 
 ### 面试题
@@ -106,7 +106,7 @@ Java异常机制用到的几个关键字：**try、catch、finally、throw、thr
 
 所以在实际项目中，finally常常是用来关闭流或者数据库资源的，并不额外做其他操作。
 
-**熟悉的runtimeException子类**
+**熟悉的RuntimeException子类**
 
 1、 java.lang.ArrayIndexOutOfBoundsException
 数组索引越界异常。当对数组的索引值为负数或大于等于数组大小时抛出。
