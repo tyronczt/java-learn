@@ -1,6 +1,6 @@
 ## [MyBatis-Plus](https://mybatis.plus/) 的进阶
 
-### 逻辑删除的运用
+### [逻辑删除的运用](https://mybatis.plus/guide/logic-delete.html)
 
 1、在删除字段上增加 `@TableLogic` 注解
 
@@ -19,8 +19,8 @@ private Integer deleted;
 mybatis-plus:
   global-config:
     db-config:
-      logic-delete-value: 1
-      logic-not-delete-value: 0
+      logic-delete-value: 1 # 逻辑已删除值(默认为 1)
+      logic-not-delete-value: 0 # 逻辑未删除值(默认为 0)
 ```
 
 3、测试方法
@@ -60,7 +60,7 @@ public void selectById() {
 
 注意事项：自定义方法中 @TableLogic 不会起作用
 
-### 自动填充的运用
+### [自动填充的运用](https://mybatis.plus/guide/auto-fill-metainfo.html)
 
 1、在自动填充字段上增加 `@TableField(fill = FieldFill.XXX)` 注解
 
@@ -165,6 +165,58 @@ public class MyMetaObjectHandler implements MetaObjectHandler {
             setUpdateFieldValByName("updateTime", LocalDateTime.now(), metaObject);
         }
     }
+}
+```
+
+### [乐观锁插件的运用](https://mybatis.plus/guide/optimistic-locker-plugin.html)
+
+悲观锁(Pessimistic Locking)，悲观锁是指在数据处理过程，使数据处于锁定状态，一般使用数据库的锁机制实现。适合在写多读少的并发环境中使用，虽然无法维持非常高的性能，但是在乐观锁无法提更好的性能前提下，可以做到数据的安全性。
+
+乐观锁相对悲观锁而言，它认为数据一般情况下不会造成冲突，所以在数据进行提交更新的时候，才会正式对数据的冲突与否进行检测，如果发现冲突了，则让返回错误信息，让用户决定如何去做。
+
+利用数据版本号（**version**）机制是乐观锁最常用的一种实现方式。
+
+1、配置乐观锁插件
+
+```JAVA
+/**
+ * 乐观锁插件
+ */
+@Bean
+public OptimisticLockerInterceptor optimisticLockerInterceptor() {
+	return new OptimisticLockerInterceptor();
+}
+```
+
+2、在版本字段上增加 `@Version` 注解
+
+```java
+@Version
+private Integer version;
+```
+
+3、测试栗子
+
+```java
+/**
+  * 乐观锁-更新用户数据
+  * 
+  * ==>  Preparing: UPDATE user SET update_time=?, version=?, age=? WHERE id=? AND version=? AND deleted=0
+  * ==> Parameters: 2020-05-17T20:42:39.527(LocalDateTime), 2(Integer), 29(Integer), 1260593237899411457(Long), 1(Integer)
+  * <==    Updates: 1
+  * 影响行数：1
+  */
+@Test
+public void updateById() {
+    // 模拟从数据库取出版本信息
+    int version = 1;
+
+    User user = new User();
+    user.setId(1260593237899411457L);
+    user.setVersion(version);
+    user.setAge(29);
+    int effectNum = userMapper.updateById(user);
+    System.out.println("影响行数：" + effectNum);
 }
 ```
 
