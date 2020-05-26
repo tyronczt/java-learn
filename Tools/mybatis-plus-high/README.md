@@ -272,3 +272,65 @@ outagedetection=true
 # 慢SQL记录标准 2 秒
 outagedetectioninterval=2
 ```
+
+### [Sql 注入器](https://mybatis.plus/guide/sql-injector.html)
+
+1、创建定义方法的类
+
+```java
+@Override
+public MappedStatement injectMappedStatement(Class<?> mapperClass, Class<?> modelClass, TableInfo tableInfo) {
+    // 执行的SQL
+    String sql = "delete from " + tableInfo.getTableName();
+    // Mapper接口方法名
+    String method = "deleteAll";
+    SqlSource sqlSource = languageDriver.createSqlSource(configuration, sql, modelClass);
+    return addDeleteMappedStatement(mapperClass, method, sqlSource);
+}
+```
+
+2、创建注入器
+
+```java
+@Component
+public class MySqlInjector extends DefaultSqlInjector {
+
+    @Override
+    public List<AbstractMethod> getMethodList(Class<?> mapperClass) {
+        List<AbstractMethod> methodList = super.getMethodList(mapperClass);
+        methodList.add(new DeleteAllMethod());
+        return methodList;
+    }
+}
+
+```
+
+3、在Mapper中加入自定义方法
+
+```java
+/**
+ * 删除所有数据
+ *
+ * @return 影响的行数
+ */
+int deleteAll();
+```
+
+4、测试
+
+```java
+/**
+ * 删除所有行数
+ *
+ * ==>  Preparing: delete from user
+ * ==> Parameters:
+ * <==    Updates: 7
+ * 影响的行数：7
+ */
+@Test
+public void deleteAll() {
+    int effectNums = userMapper.deleteAll();
+    System.out.println("影响的行数：" + effectNums);
+}
+```
+
