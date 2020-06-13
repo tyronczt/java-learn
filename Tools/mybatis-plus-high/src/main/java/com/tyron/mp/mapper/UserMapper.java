@@ -15,4 +15,19 @@ public interface UserMapper extends BaseMapper<User> {
 
     @Select("select * from user ${ew.customSqlSegment}")
     List<User> selectAll(@Param(Constants.WRAPPER) Wrapper<User> wrapper);
+
+    /**
+     * 删除所有数据
+     *
+     * @return 影响的行数
+     */
+    int deleteAll();
+
+    /**
+     * 批量插入用户
+     *
+     * @param list 列表
+     * @return
+     */
+    int insertBatchSomeColumn(List<User> list);
 }

@@ -3,6 +3,7 @@ package com.tyron.mp.entity;
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.Version;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import lombok.Data;
 
@@ -51,6 +52,7 @@ public class User extends Model<User> {
     /**
      * 版本
      */
+    @Version
     private Integer version;
 
     /**

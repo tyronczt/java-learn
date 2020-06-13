@@ -30,6 +30,13 @@
             <version>3.2.0</version>
         </dependency>
 
+        <!--性能分析使用（执行 SQL 分析打印）-->
+        <dependency>
+            <groupId>p6spy</groupId>
+            <artifactId>p6spy</artifactId>
+            <version>3.9.0</version>
+        </dependency>
+
         <!--MySQL JDBC驱动-->
         <dependency>
             <groupId>mysql</groupId>

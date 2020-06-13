@@ -275,7 +275,7 @@ outagedetectioninterval=2
 
 ### [Sql 注入器](https://mybatis.plus/guide/sql-injector.html)
 
-1、创建定义方法的类
+1.1、创建定义方法的类
 
 ```java
 @Override
@@ -289,7 +289,7 @@ public MappedStatement injectMappedStatement(Class<?> mapperClass, Class<?> mode
 }
 ```
 
-2、创建注入器
+1.2、创建注入器
 
 ```java
 @Component
@@ -305,7 +305,7 @@ public class MySqlInjector extends DefaultSqlInjector {
 
 ```
 
-3、在Mapper中加入自定义方法
+1.3、在Mapper中加入自定义方法
 
 ```java
 /**
@@ -316,7 +316,7 @@ public class MySqlInjector extends DefaultSqlInjector {
 int deleteAll();
 ```
 
-4、测试
+1.4、测试
 
 ```java
 /**
@@ -334,3 +334,56 @@ public void deleteAll() {
 }
 ```
 
+2.1、将自带批量插入注入器添加到methodList中
+
+```java
+@Component
+public class MySqlInjector extends DefaultSqlInjector {
+
+   @Override
+    public List<AbstractMethod> getMethodList(Class<?> mapperClass) {
+        List<AbstractMethod> methodList = super.getMethodList(mapperClass);
+        methodList.add(new DeleteAllMethod());
+        methodList.add(new InsertBatchSomeColumn(t -> !t.isLogicDelete() && !t.getColumn().equals("age")));// 自带批量插入注入器(逻辑删除字段和年龄字段不填充）
+        return methodList;
+    }
+}
+```
+
+2.2、在Mapper中加入自带方法
+
+```java
+ /**
+  * 批量插入用户
+  *
+  * @param list 列表
+  * @return
+  */
+int insertBatchSomeColumn(List<User> list);
+```
+
+2.3、测试
+
+```java
+ @Test
+ public void insertBatchSomeColumn() {
+     User user1 = new User();
+     user1.setName("黄呼呼");
+     user1.setEmail("hhh@tyron.com");
+     user1.setManagerId(1087982257332887553L);
+     user1.setAge(33);
+
+    User user2 = new User();
+    user2.setName("张云云");
+    user2.setEmail("zyy@tyron.com");
+    user2.setManagerId(1087982257332887553L);
+    user2.setAge(23);
+    int effectNums = userMapper.insertBatchSomeColumn(Arrays.asList(user1, user2));
+    System.out.println("影响的行数：" + effectNums);
+}
+```
+
+同理的自带注入器还有：
+
+- LogicDeleteByIdWithFill：根据 id 逻辑删除数据,并带字段填充功能。注意入参是 entity !!! ,如果字段没有自动填充,就只是单纯的逻辑删除；
+-  AlwaysUpdateSomeColumnById ：根据 ID 更新固定的那几个字段(但是不包含逻辑删除)
