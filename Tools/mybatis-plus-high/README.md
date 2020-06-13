@@ -1,5 +1,8 @@
 ## [MyBatis-Plus](https://mybatis.plus/) 的进阶
 
+> [MyBatis-Plus 快速入门](https://blog.csdn.net/tian330726/article/details/106087857) -- 入门篇链接
+> 项目地址 ：https://github.com/tyronczt/java-learn/tree/master/Tools/mybatis-plus-high
+
 ### [逻辑删除的运用](https://mybatis.plus/guide/logic-delete.html)
 
 1、在删除字段上增加 `@TableLogic` 注解
