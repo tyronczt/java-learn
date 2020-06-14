@@ -27,7 +27,7 @@ public class ChinaXzqhServiceImpl extends AbstractService<ChinaXzqh> implements 
     private ChinaXzqhMapper chinaXzqhMapper;
 
     private static String GD_URL = "https://restapi.amap.com/v3/place/text";
-    private static String GD_KEY = "2dc01264926fb4b75e80a991da977a93";
+    private static String GD_KEY = "your-key";
 
     @Override
     public int setGdJwd() {

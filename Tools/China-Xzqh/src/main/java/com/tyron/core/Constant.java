@@ -10,7 +10,7 @@ public final class Constant {
     //JDBC配置，请修改为你项目的实际配置
     public static final String JDBC_URL = "jdbc:mysql://localhost:3306/zj_xzqh?useUnicode=true&characterEncoding=utf-8&useSSL=true&serverTimezone=UTC";
     public static final String JDBC_USERNAME = "root";
-    public static final String JDBC_PASSWORD = "123456";
+    public static final String JDBC_PASSWORD = "tian1013";
     public static final String JDBC_DIVER_CLASS_NAME = "com.mysql.cj.jdbc.Driver";
 
     public static final String PROJECT_PATH = System.getProperty("user.dir");//项目在硬盘上的基础路径
