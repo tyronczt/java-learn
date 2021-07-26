@@ -25,6 +25,8 @@ import org.springframework.web.servlet.HandlerMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.lang.reflect.Method;
 import java.util.*;
 
@@ -45,40 +47,40 @@ public class LogFilterConfig {
     public void logPointCut() {
     }
 
-    /**
-     * 接收请求，并记录数据
-     *
-     * @param joinPoint
-     * @param log
-     */
-    @Before(value = "logPointCut()&& @annotation(log)")
-    public void doBefore(JoinPoint joinPoint, Log log) {
-        // 接收到请求
-        RequestAttributes ra = RequestContextHolder.getRequestAttributes();
-        ServletRequestAttributes sra = (ServletRequestAttributes) ra;
-        HttpServletRequest request = sra.getRequest();
-        // 记录请求内容，threadInfo存储所有内容
-        Map<String, Object> threadInfo = new HashMap<>();
-        logger.info("URL : " + request.getRequestURL());
-        threadInfo.put("url", request.getRequestURL());
-        logger.info("URI : " + request.getRequestURI());
-        threadInfo.put("uri", request.getRequestURI());
-        logger.info("HTTP_METHOD : " + request.getMethod());
-        threadInfo.put("httpMethod", request.getMethod());
-        logger.info("REMOTE_ADDR : " + request.getRemoteAddr());
-        threadInfo.put("ip", request.getRemoteAddr());
-        logger.info("CLASS_METHOD : " + joinPoint.getSignature().getDeclaringTypeName() + "."
-                + joinPoint.getSignature().getName());
-        threadInfo.put("classMethod",
-                joinPoint.getSignature().getDeclaringTypeName() + "." + joinPoint.getSignature().getName());
-        logger.info("ARGS : " + Arrays.toString(joinPoint.getArgs()));
-        threadInfo.put("args", Arrays.toString(joinPoint.getArgs()));
-        logger.info("USER_AGENT" + request.getHeader("User-Agent"));
-        threadInfo.put("userAgent", request.getHeader("User-Agent"));
-        logger.info("执行方法：" + log.title());
-        threadInfo.put("methodName", log.title());
-        threadLocal.set(threadInfo);
-    }
+//    /**
+//     * 接收请求，并记录数据
+//     *
+//     * @param joinPoint
+//     * @param log
+//     */
+//    @Before(value = "logPointCut()&& @annotation(log)")
+//    public void doBefore(JoinPoint joinPoint, Log log) {
+//        // 接收到请求
+//        RequestAttributes ra = RequestContextHolder.getRequestAttributes();
+//        ServletRequestAttributes sra = (ServletRequestAttributes) ra;
+//        HttpServletRequest request = sra.getRequest();
+//        // 记录请求内容，threadInfo存储所有内容
+//        Map<String, Object> threadInfo = new HashMap<>();
+//        logger.info("URL : " + request.getRequestURL());
+//        threadInfo.put("url", request.getRequestURL());
+//        logger.info("URI : " + request.getRequestURI());
+//        threadInfo.put("uri", request.getRequestURI());
+//        logger.info("HTTP_METHOD : " + request.getMethod());
+//        threadInfo.put("httpMethod", request.getMethod());
+//        logger.info("REMOTE_ADDR : " + request.getRemoteAddr());
+//        threadInfo.put("ip", request.getRemoteAddr());
+//        logger.info("CLASS_METHOD : " + joinPoint.getSignature().getDeclaringTypeName() + "."
+//                + joinPoint.getSignature().getName());
+//        threadInfo.put("classMethod",
+//                joinPoint.getSignature().getDeclaringTypeName() + "." + joinPoint.getSignature().getName());
+//        logger.info("ARGS : " + Arrays.toString(joinPoint.getArgs()));
+//        threadInfo.put("args", Arrays.toString(joinPoint.getArgs()));
+//        logger.info("USER_AGENT" + request.getHeader("User-Agent"));
+//        threadInfo.put("userAgent", request.getHeader("User-Agent"));
+//        logger.info("执行方法：" + log.title());
+//        threadInfo.put("methodName", log.title());
+//        threadLocal.set(threadInfo);
+//    }
 
     /**
      * 获取执行时间
@@ -104,25 +106,54 @@ public class LogFilterConfig {
      *
      * @param joinPoint 切点
      */
-    @AfterReturning(pointcut = "logPointCut()", returning = "jsonResult")
-    public void doAfterReturning(JoinPoint joinPoint, Object jsonResult) {
-        handleLog(joinPoint, null, jsonResult);
-    }
+//    @AfterReturning(pointcut = "logPointCut()", returning = "jsonResult")
+//    public void doAfterReturning(JoinPoint joinPoint, Object jsonResult) {
+//        handleLog(joinPoint, null, jsonResult);
+//    }
 
     /**
      * 拦截异常操作
-     *
+     * <p>
      * 无异常时这个AfterThrowing方法不会执行。
      * 有异常时，如果Around存在则无法执行这个AfterThrowing方法，如果Around不存在才会执行这个AfterThrowing方法
      *
      * @param joinPoint 切点
-     * @param e         异常
+     * @param ex        异常
      */
-    @AfterThrowing(value = "logPointCut()", throwing = "e")
-    public void doAfterThrowing(JoinPoint joinPoint, Exception e) {
-        handleLog(joinPoint, e, null);
+    @AfterThrowing(value = "logPointCut()", throwing = "ex")
+    public void doAfterThrowing(JoinPoint joinPoint, Throwable ex) throws Throwable {
+        logger.info("afterThrowing");
+        String className = joinPoint.getTarget().getClass().getName();
+        String methodName = joinPoint.getSignature().getName();
+        StringWriter sw = new StringWriter();
+        ex.printStackTrace(new PrintWriter(sw,true));
+        logger.info("***********************错误信息开始*************************");
+        logger.info("ErrorMsg：{}", StringUtils.substring(sw.getBuffer().toString(), 0, 500));
+        logger.info("***********************错误信息结束*************************");
+        logger.info("className:{},methodName:{}", className, methodName);
     }
 
+
+    /**
+     * 2021-07-27 00:05:20.526  INFO 17704 --- [nio-1013-exec-1] c.t.springAopLog.config.LogFilterConfig  : ***********************错误信息开始*************************
+     * 2021-07-27 00:05:20.531  INFO 17704 --- [nio-1013-exec-1] c.t.springAopLog.config.LogFilterConfig  : ErrorMsg：java.lang.NullPointerException
+     * 	at com.tyron.springAopLog.conntroller.HelloController.post(HelloController.java:28)
+     * 	at com.tyron.springAopLog.conntroller.HelloController$$FastClassBySpringCGLIB$$90285a22.invoke(<generated>)
+     * 	at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:218)
+     * 	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.invokeJoinpoint(CglibAopProxy.java:779)
+     * 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(Reflec
+     * 2021-07-27 00:05:20.532  INFO 17704 --- [nio-1013-exec-1] c.t.springAopLog.config.LogFilterConfig  : ***********************错误信息结束*************************
+     */
+
+
+
+
+    /**
+     *
+     * @param joinPoint
+     * @param e
+     * @param jsonResult
+     */
     protected void handleLog(final JoinPoint joinPoint, final Exception e, Object jsonResult) {
         try {
             // 获得注解
@@ -149,7 +180,9 @@ public class LogFilterConfig {
 //            }
             if (e != null) {
                 operLog.setStatus(BusinessStatus.FAIL.ordinal());
-                operLog.setErrorMsg(StringUtils.substring(e.getMessage(), 0, 2000));
+                String errorMsg = StringUtils.substring(e.getMessage(), 0, 2000);
+                operLog.setErrorMsg(errorMsg);
+                logger.error("ERROR MSG:" + errorMsg);
             }
             // 设置方法名称
             String className = joinPoint.getTarget().getClass().getName();
@@ -159,7 +192,7 @@ public class LogFilterConfig {
             operLog.setRequestMethod(ServletUtils.getRequest().getMethod());
             // 处理设置注解上的参数
             getControllerMethodDescription(joinPoint, controllerLog, operLog);
-            // 保存数据库
+            // TODO 保存数据库
         } catch (Exception exp) {
             // 记录本地异常日志
             logger.error("==前置通知异常==");
