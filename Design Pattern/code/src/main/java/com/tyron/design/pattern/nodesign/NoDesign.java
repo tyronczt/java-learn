@@ -22,6 +22,7 @@ public class NoDesign {
      * 阿里巴巴java开发手册：超过 3 层的 if-else 的逻辑判断代码可以使用卫语句、策略模式、状态模式等来实现
      *
      * 参考视频讲解：https://www.bilibili.com/video/BV1b5411a7oa
+     * https://juejin.cn/post/6844904022072262670
      */
     public static void NoDesignBusiness(String company) {
         // 判断公司类型，然后进行数据入库操作

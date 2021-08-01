@@ -40,6 +40,10 @@ public class CompanyFactory {
         if (StringUtils.isEmpty(company)) {
             return null;
         }
-        return strategyMap.get(company);
+        Handle handle = strategyMap.get(company);
+        if (handle == null) {
+            throw new UnsupportedOperationException("没有此公司的入库实现");
+        }
+        return handle;
     }
 }
