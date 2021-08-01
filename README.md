@@ -86,7 +86,7 @@ TODO
 
 ## 其他
 
-- [设计模式](https://github.com/tyronczt/java-learn/tree/master/Design%20Pattern)
+- [设计模式](https://github.com/tyronczt/java-learn/blob/master/Design%20Pattern/Design%20Pattern.md)
 - Java 8
 - Java版本更新内容 
 
