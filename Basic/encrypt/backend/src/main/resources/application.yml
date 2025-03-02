@@ -1,0 +1,63 @@
+# 应用配置
+spring:
+  application:
+    name: secure-query-backend
+  
+  # 数据库配置 - 使用H2内存数据库用于演示
+  datasource:
+    url: jdbc:h2:mem:securedb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    username: sa
+    password: 
+    driver-class-name: org.h2.Driver
+  
+  # JPA配置
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.H2Dialect
+  
+  # H2控制台配置
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+      settings:
+        web-allow-others: false
+
+# 服务器配置
+server:
+  port: 8080
+  servlet:
+    context-path: /
+
+# 日志配置
+logging:
+  level:
+    root: INFO
+    com.security: DEBUG
+    org.hibernate.SQL: INFO
+
+# 自定义安全配置
+security:
+  # RSA密钥配置
+  rsa:
+    key-size: 2048
+    key-cache-days: 30
+  
+  # 审计日志配置
+  audit:
+    enabled: true
+    retention-days: 90
+  
+  # 加密配置
+  encryption:
+    # 身份证号索引配置
+    idcard-index:
+      # 模糊索引的N-gram长度
+      ngram-length: 3
+      # 索引哈希算法
+      hash-algorithm: SHA-256
