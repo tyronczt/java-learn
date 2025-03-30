@@ -99,6 +99,13 @@ TODO
 
 TODO
 
+## AI 技术
+[Spring AI集成DeepSeek：三步搞定Java智能应用](https://tyron.blog.csdn.net/article/details/145669294)
+
+[Spring AI集成DeepSeek，实现流式输出](https://tyron.blog.csdn.net/article/details/145670254)
+
+[AI赋能传统系统：Spring AI Alibaba如何用大模型重构机票预订系统？](https://tyron.blog.csdn.net/article/details/145732997)
+
 ## 优秀文集（GitHub）
 
 - [后端架构师技术图谱](https://github.com/xingshaocheng/architect-awesome/)
